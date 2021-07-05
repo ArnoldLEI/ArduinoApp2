@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "362515897888",
+    "firebase_url": "https://arduinoiot-7a69d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "arduinoiot-7a69d",
+    "storage_bucket": "arduinoiot-7a69d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362515897888:android:faa4aee2fcf5d697d5e645",
+        "android_client_info": {
+          "package_name": "com.example.arduinoapp2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "362515897888-28b9g0dslvejlrle063seff31jaro202.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj23kSSI9c2bw5qMAeT1q4QackdRYEQT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "362515897888-28b9g0dslvejlrle063seff31jaro202.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
