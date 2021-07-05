@@ -20,10 +20,7 @@ fun main(){
     //2x+4y=240
     //x+2y=120
     //y=37,x=46
-    val r = (sum2/2-sum1)
-    val c = sum1 - r
-    print("雞:%d,兔:%d".format(c,r))
-    sum2/2-sum1
+
 
 
 }
