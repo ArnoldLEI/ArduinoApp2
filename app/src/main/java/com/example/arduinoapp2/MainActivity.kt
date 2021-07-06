@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 val value = dataSnapshot.getValue(String::class.java)
-                findViewById<TextView>(R.id.tv_text).text = value
+                findViewById<TextView>(R.id.tv_total_amount).text = value
 
             }
 
