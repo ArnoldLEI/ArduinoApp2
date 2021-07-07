@@ -1,6 +1,7 @@
 package com.study.app_tickets_firebase
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -28,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         context = this
         userName = "John"
+        // 修改 Title
+        title = "Hi " + userName + " 的雲端購票"
         // Read from the database
         myRef.addValueEventListener(object: ValueEventListener {
 
@@ -141,5 +144,13 @@ class MainActivity : AppCompatActivity() {
 
         tv_warning.setText("購買成功")
         Toast.makeText(context, "購買成功", Toast.LENGTH_SHORT).show()
+    }
+
+    fun recordTickets(view: View){
+        val intent = Intent(context, OrderListActivity::class.java)
+        // 設定 userName 參數資料給指定頁 (Ex:OrderListActivity)
+        intent.putExtra("userName", userName)
+        startActivity(intent)
+
     }
 }
