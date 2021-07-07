@@ -163,6 +163,22 @@
 
     </LinearLayout>
 
+    <!-- 警告訊息 -->
+    <TextView
+        android:id="@+id/tv_warning"
+        android:layout_margin="15dp"
+        android:background="@drawable/border"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:padding="20dp"
+        android:text="None..."
+        android:textColor="#ff0000"
+        android:textSize="20dp" />
+
+
+
 
 
 
