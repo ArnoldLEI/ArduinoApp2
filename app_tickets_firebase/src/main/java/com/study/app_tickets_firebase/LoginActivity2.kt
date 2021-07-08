@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login2.*
 
 class LoginActivity2 : AppCompatActivity() {
@@ -24,7 +25,13 @@ class LoginActivity2 : AppCompatActivity() {
     }
 
     fun consoleLogin(view: View){
-
+        val userName = et_username.text.toString()
+        if(userName.equals("admin")) {
+            val intent = Intent(context, ConsoleActivity::class.java)
+            startActivity(intent)
+        } else {
+            Toast.makeText(context, "無權限進入 !", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
