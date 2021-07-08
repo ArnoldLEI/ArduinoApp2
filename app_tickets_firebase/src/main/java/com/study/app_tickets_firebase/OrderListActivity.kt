@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_order_list.*
+import java.lang.Exception
 
 class OrderListActivity : AppCompatActivity() {
 
@@ -21,41 +23,54 @@ class OrderListActivity : AppCompatActivity() {
     val myRef = database.getReference("ticketsStock")
     lateinit var userName: String
     lateinit var context: Context
-    lateinit var recyclerViewAdapter: recyclerViewAdapter
+    lateinit var recyclerViewAdapter: RecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
         context = this
-        userName = "John"
 
         // 取得上一頁傳來的 userName 參數資料
         userName = intent.getStringExtra("userName").toString()
         //read from database
-        myRef.addValueEventListener(object: ValueEventListener{
+        myRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val children = snapshot.children
-                val orderList = mutableListOf<String>(userName)
-                children.forEach{
-                    if(it.key.toString() == "orders"){
+                val orderList = mutableListOf<Order>()
+                children.forEach {
+                    if(it.key.toString() == "orders") {
                         tv_info.setText(it.child(userName).toString())
-                        it.child(userName).children.forEach{
-                            orderList.add(it.toString())
+                        it.child(userName).children.forEach {
+                            try {
+                                val order = Order(
+                                    userName,
+                                    it.key.toString(),
+                                    it.child("allTickets").value.toString().toInt(),
+                                    it.child("roundTrip").value.toString().toInt(),
+                                    it.child("oneWay").value.toString().toInt(),
+                                    it.child("total").value.toString().toInt()
+                                )
+                                orderList.add(order)
+                            }catch (e: Exception){
+
+                            }
+
+
                         }
                     }
                 }
-                //更新 recycler view 的資訊
+                // 更新 recycler view 的資訊
                 recyclerViewAdapter.setOrders(orderList)
-                //通知UI畫面變更
+                // 通知 UI 變更
                 recyclerViewAdapter.notifyDataSetChanged()
             }
             override fun onCancelled(error: DatabaseError) {
             }
         })
 
-        //init recycler view
+        // init recycler view
         recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
-            recyclerViewAdapter = recyclerViewAdapter()
+            recyclerViewAdapter = RecyclerViewAdapter()
             adapter = recyclerViewAdapter
             // 分隔線
             val divider = DividerItemDecoration(context, StaggeredGridLayoutManager.VERTICAL)

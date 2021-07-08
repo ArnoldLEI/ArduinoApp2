@@ -6,23 +6,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.order.view.*
 
-class recyclerViewAdapter():RecyclerView.Adapter<recyclerViewAdapter.MyViewHolder>() {
-
-    var orderList: List<String> = ArrayList<String>()
-
-    fun setOrders(orders: List<String>) {
+class RecyclerViewAdapter(): RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
+    var orderList: List<Order> = ArrayList<Order>()
+    fun setOrders(orderList: List<Order>) {
         this.orderList = orderList
     }
-
-    ///配置方式
+    // View 配置方式
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val allTickets = view.tv_allTickets
+        val roundTrip = view.tv_roundTrip
+        val oneWay = view.tv_oneWay
+        val total = view.tv_total
+        fun bind(order: Order) {
+            allTickets.text = order.allTickets.toString()
+            roundTrip.text  = order.roundTrip.toString()
+            oneWay.text     = order.oneWay.toString()
+            total.text      = order.total.toString()
 
-        val record = view.tv_record
-        fun bind(data: String) {
-            record.text = data
         }
-
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.order, parent, false)
@@ -36,6 +39,4 @@ class recyclerViewAdapter():RecyclerView.Adapter<recyclerViewAdapter.MyViewHolde
     override fun getItemCount(): Int {
         return orderList.size
     }
-
-
 }
