@@ -38,24 +38,42 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
                 val children = snapshot.children
                 val orderList = mutableListOf<Order>()
                 children.forEach {
-                    if(it.key.toString() == "orders") {
-                        tv_info.setText(it.child(userName).toString())
-                        it.child(userName).children.forEach {
-                            try {
-                                val order = Order(
-                                    userName,
-                                    it.key.toString(),
-                                    it.child("allTickets").value.toString().toInt(),
-                                    it.child("roundTrip").value.toString().toInt(),
-                                    it.child("oneWay").value.toString().toInt(),
-                                    it.child("total").value.toString().toInt()
-                                )
-                                orderList.add(order)
-                            }catch (e: Exception){
-
+                    if (it.key.toString() == "orders") {
+                        if (userName == null || userName.equals("") || userName.equals("null")) {
+                            it.children.forEach {
+                                val userName = it.key.toString()
+                                it.children.forEach {
+                                    try {
+                                        val order = Order(
+                                            userName,
+                                            it.key.toString(),
+                                            it.child("allTickets").value.toString().toInt(),
+                                            it.child("roundTrip").value.toString().toInt(),
+                                            it.child("oneWay").value.toString().toInt(),
+                                            it.child("total").value.toString().toInt()
+                                        )
+                                        orderList.add(order)
+                                    } catch (e: Exception) {
+                                    }
+                                }
                             }
-
-
+                        } else {
+                            //指名username
+                            tv_info.setText(it.child(userName).toString())
+                            it.child(userName).children.forEach {
+                                try {
+                                    val order = Order(
+                                        userName,
+                                        it.key.toString(),
+                                        it.child("allTickets").value.toString().toInt(),
+                                        it.child("roundTrip").value.toString().toInt(),
+                                        it.child("oneWay").value.toString().toInt(),
+                                        it.child("total").value.toString().toInt()
+                                    )
+                                    orderList.add(order)
+                                } catch (e: Exception) {
+                                }
+                            }
                         }
                     }
                 }
@@ -84,9 +102,21 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
         alert.setTitle("退票")
         alert.setMessage("$key 是否要退票 ?")
         alert.setPositiveButton("是") { diglog, which ->
+
+            // 刪除訂單記錄
             myRef.child("orders/" + userName + "/" + key).removeValue()
-            val returnTickets = TicketsStock.totalAmount + order.allTickets
-            myRef.child("totalAmount").setValue(returnTickets)
+
+            // 票數加回
+            // 從 order.allTickets 加回到 firebase's totalAmount 欄位中
+            myRef.child("totalAmount").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val returnTickets = snapshot.getValue().toString().toInt() + order.allTickets
+                    myRef.child("totalAmount").setValue(returnTickets)
+                }
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
         }
         alert.setNegativeButton("否",null)
         alert.show()

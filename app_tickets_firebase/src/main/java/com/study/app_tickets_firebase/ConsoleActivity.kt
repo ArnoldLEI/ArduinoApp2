@@ -8,6 +8,8 @@ import com.google.firebase.ktx.Firebase
 import android.content.Intent
 import android.provider.ContactsContract
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
@@ -34,6 +36,10 @@ class ConsoleActivity : AppCompatActivity() {
         myRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val children = snapshot.children
+                var sumTotal = 0
+                var sumAllTickets = 0
+                var sumOneWay = 0
+                var sumRoundTrip = 0
                 children.forEach{
                     Log.d("MainActivity",
                         it.key.toString() + ":" + it.value.toString())
@@ -41,9 +47,30 @@ class ConsoleActivity : AppCompatActivity() {
                         "discount" -> TicketsStock.discount = it.value.toString().toDouble()
                         "price" -> TicketsStock.price = it.value.toString().toInt()
                         "totalAmount" -> TicketsStock.totalAmount = it.value.toString().toInt()
+
+                        //訂單明細
+                        "orders" ->{
+                            it.children.forEach { //訂購人
+                                it.children.forEach { //訂購日期
+                                    it.children.forEach { //訂票內容
+                                        when(it.key.toString()){
+                                            "allTickets" -> sumAllTickets += it.value.toString().toInt()
+                                            "oneWay" -> sumOneWay += it.value.toString().toInt()
+                                            "roundTrip" -> sumRoundTrip += it.value.toString().toInt()
+                                            "total" -> sumTotal += it.value.toString().toInt()
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+                //顯示統計資料
 
+                tv_stat.text = "總賣票數：${String.format("%,d", sumAllTickets)} 張\n" +
+                               "總單程票：${String.format("%,d", sumOneWay)} 張\n" +
+                               "總來回票：${String.format("%,d", sumRoundTrip * 2)} 張 (${String.format("%,d", sumRoundTrip)} 張)\n" +
+                               "總銷售金額：$${String.format("%,d", sumTotal)} 元"
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -64,6 +91,23 @@ class ConsoleActivity : AppCompatActivity() {
         }
         myRef.child(tag).setValue(value)
         Toast.makeText(context, tag + " 修改成功", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.add(1, 1, 30,"訂單細目")?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        menu?.add(1, 2, 20,"返回")?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            1 -> { // "訂單細目"
+                val intent = Intent(context, OrderListActivity::class.java)
+                startActivity(intent)
+            }
+            2 -> finish()   //返回
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
