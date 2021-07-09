@@ -9,8 +9,10 @@
         android:roundIcon="@drawable/ticket"
         android:supportsRtl="true"
         android:theme="@style/Theme.ArduinoApp2">
-        <activity android:name=".ConsoleActivity"></activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".ConsoleActivity"
+            android:parentActivityName=".LoginActivity2" />
+        <activity android:name=".MainActivity"
+            android:parentActivityName=".LoginActivity2" />
         <activity android:name=".OrderListActivity" />
         <activity android:name=".LoginActivity2">
             <intent-filter>

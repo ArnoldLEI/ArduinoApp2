@@ -28,6 +28,7 @@ class ConsoleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_console)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         context = this
         userName = intent.getStringExtra("userName").toString()
@@ -95,7 +96,7 @@ class ConsoleActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.add(1, 1, 30,"訂單細目")?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-        menu?.add(1, 2, 20,"返回")?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -105,10 +106,7 @@ class ConsoleActivity : AppCompatActivity() {
                 val intent = Intent(context, OrderListActivity::class.java)
                 startActivity(intent)
             }
-            2 -> finish()   //返回
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -28,10 +29,16 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         context = this
 
         // 取得上一頁傳來的 userName 參數資料
         userName = intent.getStringExtra("userName").toString()
+        if (userName == null || userName.equals("") || userName.equals("null")) {
+            title = "雲端購票全紀錄"
+        } else {
+            title = "Hi " + userName + " 的雲端購票紀錄"
+        }
         //read from database
         myRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -104,13 +111,13 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
         alert.setPositiveButton("是") { diglog, which ->
 
             // 刪除訂單記錄
-            myRef.child("orders/" + userName + "/" + key).removeValue()
-
+            myRef.child("orders/" + order.userName + "/" + key).removeValue()
             // 票數加回
             // 從 order.allTickets 加回到 firebase's totalAmount 欄位中
+            // addListenerForSingleValueEvent 監聽單一欄位資料
             myRef.child("totalAmount").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val returnTickets = snapshot.getValue().toString().toInt() + order.allTickets
+                    val returnTickets = snapshot.value.toString().toInt() + order.allTickets
                     myRef.child("totalAmount").setValue(returnTickets)
                 }
                 override fun onCancelled(error: DatabaseError) {
@@ -120,7 +127,11 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
         }
         alert.setNegativeButton("否",null)
         alert.show()
-
-        //Toast.makeText(context, order.toString(), Toast.LENGTH_SHORT).show()
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
