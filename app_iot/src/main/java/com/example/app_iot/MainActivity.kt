@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     val logRef = database.getReference("log")
     val faceRef = database.getReference("face")
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,7 +36,41 @@ class MainActivity : AppCompatActivity() {
         openWeatherOnClick(btn_message)
 
     }
+    fun redOnClick(view: View){
+        ledRef.setValue(1)
+    }
+    fun greenOnClick(view: View){
+        ledRef.setValue(2)
+    }
+    fun yelloOnClick(view: View){
+        ledRef.setValue(3)
+    }
+    fun doorOnClick(view: View){
+        doorRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
 
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString().toInt()
+                if(value == 1) {
+                    doorRef.setValue(0)
+                } else {
+                    doorRef.setValue(1)
+                }
+            }
+        })
+    }
+    fun warnOnClick(view: View){
+        buzeerRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString().toInt()
+                if(value == 0) {
+                    buzeerRef.setValue(1)
+                }
+            }
+        })
+    }
     fun openWeatherOnClick(view: View) {
         GlobalScope.launch {
             val client = OkHttpClient()

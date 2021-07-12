@@ -22,7 +22,7 @@
     </LinearLayout>
 
 
-    <!--控指按鈕-->
+    <!--控制按鈕-->
     <LinearLayout
         android:layout_weight="1"
         android:orientation="horizontal"
@@ -32,6 +32,7 @@
         <ImageButton
             android:id="@+id/ib_warnning"
             android:layout_weight="1"
+            android:onClick="warnOnClick"
             android:src="@drawable/buzeer_close"
             android:background="@color/white"
             android:layout_width="wrap_content"
@@ -40,6 +41,7 @@
 
             android:id="@+id/ib_led_red"
             android:layout_weight="1"
+            android:onClick="redOnClick"
             android:src="@drawable/red"
             android:background="@color/white"
             android:layout_width="wrap_content"
@@ -48,6 +50,7 @@
 
             android:id="@+id/ib_led_green"
             android:layout_weight="1"
+            android:onClick="greenOnClick"
             android:src="@drawable/green"
             android:background="@color/white"
             android:layout_width="wrap_content"
@@ -56,6 +59,7 @@
 
             android:id="@+id/ib_yellow_led"
             android:layout_weight="1"
+            android:onClick="yelloOnClick"
             android:src="@drawable/yellow"
             android:background="@color/white"
             android:layout_width="wrap_content"
@@ -64,6 +68,7 @@
 
             android:id="@+id/ib_door"
             android:layout_weight="1"
+            android:onClick="doorOnClick"
             android:src="@drawable/door_close"
             android:background="@color/white"
             android:layout_width="wrap_content"
