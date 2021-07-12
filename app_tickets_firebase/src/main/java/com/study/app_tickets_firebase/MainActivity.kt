@@ -55,6 +55,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+        var result = resources.getString(R.string.tickets_result)
+        result = String.format(result, 0, 0, 0, 0)
+        tv_result.setText(result)
 
     }
 
@@ -120,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         val roundTrip = et_round_trip.text.toString().toInt()
 
 
-
+        //票務處理
         val tickets = Tickets(userName,allTickets, roundTrip)
         //  result = 總票數：%d\n來回票：%d\n單程票：%d\n總金額：$%,d
         var result = resources.getString(R.string.tickets_result)

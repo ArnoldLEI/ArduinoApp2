@@ -83,30 +83,42 @@ class ConsoleActivity : AppCompatActivity() {
                         }
                     }
                 }
-                Log.d("ConsoleActivity", statListByUser.toString())
+
 
                 //顯示統計資料
                 tv_stat.text = "總賣票數：${String.format("%,d", sumAllTickets)} 張\n" +
                                "總單程票：${String.format("%,d", sumOneWay)} 張\n" +
                                "總來回票：${String.format("%,d", sumRoundTrip * 2)} 張 (${String.format("%,d", sumRoundTrip)} 張)\n" +
                                "總銷售金額：$${String.format("%,d", sumTotal)} 元"
+
+                Log.d("ConsoleActivity", statListByUser.toString())
+                // 載入圖表
+                loadChart(statListByUser)
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
         })
-        // 載入圖表
-        loadChart()
+
     }
 
-    fun loadChart() {
+    fun loadChart(statListByUser: List<Map<String, Int>>) {
+        // ['Anita', 12480], ...
+        var rowDataByChart: String = ""
+        statListByUser.forEach {
+            val key = it.keys.iterator().next()
+            val value = it[key]
+            rowDataByChart += "['$key', $value],"
+        }
+        Log.d("ConsoleActivity", rowDataByChart)
+
         var webSettings =  web_view.settings;
         webSettings.setJavaScriptEnabled(true); // 啟用 Javascript
         webSettings.setBuiltInZoomControls(true); // 啟用 Zoom
         var asset_path = "file:///android_asset/";
         var html = getHtml("chart.html");
-        html = String.format(html!!, 10, 20, 30, 40, 50)
+        html = String.format(html!!, rowDataByChart)
         web_view.loadDataWithBaseURL(asset_path, html!!, "text/html", "utf-8", null);
         web_view.requestFocusFromTouch();
     }
@@ -140,7 +152,7 @@ class ConsoleActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.add(1, 1, 30,"訂單細目")?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-
+        menu?.add(0,2,20,"[ － ]")?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -148,6 +160,10 @@ class ConsoleActivity : AppCompatActivity() {
         when(item.itemId){
             1 -> { // "訂單細目"
                 val intent = Intent(context, OrderListActivity::class.java)
+                startActivity(intent)
+            }
+            2 -> { // "Qrcode Activity"
+                val intent = Intent(context, QRCodeActivity::class.java)
                 startActivity(intent)
             }
         }

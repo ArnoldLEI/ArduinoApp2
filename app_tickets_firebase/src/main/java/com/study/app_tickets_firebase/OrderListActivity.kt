@@ -1,11 +1,14 @@
 package com.study.app_tickets_firebase
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +19,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.android.synthetic.main.activity_order_list.*
 import java.lang.Exception
 
@@ -105,10 +110,11 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
     }
     override fun onItemClickListener(order: Order) {
         val key = order.key
+        val userName = order.userName
         val alert = AlertDialog.Builder(context)
-        alert.setTitle("退票")
-        alert.setMessage("$key 是否要退票 ?")
-        alert.setPositiveButton("是") { diglog, which ->
+        alert.setTitle("票卷處置")
+        alert.setMessage("票卷：${userName} [$key]")
+        alert.setPositiveButton("退票") { diglog, which ->
 
             // 刪除訂單記錄
             myRef.child("orders/" + order.userName + "/" + key).removeValue()
@@ -125,9 +131,31 @@ class OrderListActivity : AppCompatActivity(), RecyclerViewAdapter.RowOnItemClic
                 }
             })
         }
+        alert.setNeutralButton("QRcode") { dialog, which ->
+            // 產生 QRCode
+            val encodedText = userName + "/" + key
+            val writer = QRCodeWriter()
+            val bitMatrix = writer.encode(encodedText, BarcodeFormat.QR_CODE, 512, 512)
+            val width = bitMatrix.width
+            val height = bitMatrix.height
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
+                }
+            }
+            // 將 QRCode 顯示在 AlertDialog 中
+            val qrcodeImageView = ImageView(context)
+            qrcodeImageView.setImageBitmap(bitmap)
+            AlertDialog.Builder(context)
+                .setView(qrcodeImageView)
+                .create()
+                .show()
+        }
         alert.setNegativeButton("否",null)
         alert.show()
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home -> finish()
