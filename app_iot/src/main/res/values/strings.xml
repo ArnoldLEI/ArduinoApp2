@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">app_iot</string>
+    <sreing name="open_weather_key">
+        e781ec2e302439679552cd8ff8715e7c
+    </sreing>
+    <sreing name="open_weather_base_url">
+        https://api.openweathermap.org/data/2.5/weather?q=%s,%s&amp;appid=%s
+    </sreing>
+    <string name="open_weather_icon_url">
+        https://openweathermap.org/img/wn/%s@2x.png
+    </string>
+</resources>
